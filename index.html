@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Guide to Number Theory: KPK & FPB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: "Energetic & Playful" 
+         Primary Blue: #2e86de
+         Vibrant Cyan: #48dbfb
+         Energetic Orange: #ff9f43
+         Soft Background: #f7f9fc
+         Dark Text: #222f3e
+    -->
+    <style>
+        body {
+            background-color: #f7f9fc;
+            color: #222f3e;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            margin: 0 auto;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        /* Custom hierarchy styles since no SVG allowed */
+        .circle-container {
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .circle-container:hover {
+            transform: scale(1.02);
+        }
+    </style>
+    <!-- 
+      PLAN SUMMARY:
+      1. Introduction: Hook regarding the hidden patterns in numbers.
+      2. Hierarchy Section: HTML-based nested circles to show Number Systems.
+      3. Primes Section: Bar chart showing Factor counts to define Primes.
+      4. LCM Section: Line chart visualizing overlapping schedules.
+      5. GCD Section: Stacked bar visualization of grouping.
+      
+      DATA POINT MAPPING (NO SVG CONFIRMED):
+      - Number Hierarchy -> Goal: Organize -> Vis: Nested HTML Divs (Styled circles).
+      - Factor Count -> Goal: Compare -> Vis: Bar Chart (Chart.js).
+      - Bus Schedule (LCM) -> Goal: Change/Time -> Vis: Line Chart (Chart.js).
+      - Packing Boxes (GCD) -> Goal: Composition -> Vis: Stacked Bar Chart (Chart.js).
+    -->
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header Section -->
+    <header class="max-w-6xl mx-auto mb-12 text-center">
+        <h1 class="text-4xl md:text-6xl font-extrabold text-[#2e86de] mb-4 tracking-tight">
+            Menjelajahi Dunia Bilangan
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Panduan visual untuk memahami struktur angka, bilangan prima, dan penerapan nyata KPK & FPB.
+        </p>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+
+        <!-- Section 1: Classification of Numbers -->
+        <section class="glass-card rounded-2xl shadow-xl p-6 md:col-span-2">
+            <h2 class="text-2xl font-bold text-[#2e86de] mb-4 border-b-2 border-[#48dbfb] inline-block pb-2">
+                1. Peta Semesta Bilangan
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4 text-lg leading-relaxed">
+                        Sama seperti biologi yang mengklasifikasikan hewan, matematika mengelompokkan angka. 
+                        Semua angka yang kita gunakan sehari-hari berada di bawah payung <strong>Bilangan Real</strong>.
+                        Penting untuk memahami bahwa <span class="font-bold text-[#ff9f43]">setiap lapisan dalam</span> mencakup lapisan di luarnya.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600 bg-blue-50 p-4 rounded-lg">
+                        <li><strong class="text-[#2e86de]">Bilangan Asli:</strong> (1, 2, 3...) - Untuk menghitung benda.</li>
+                        <li><strong class="text-[#2e86de]">Bilangan Cacah:</strong> (0, 1, 2...) - Asli + Nol.</li>
+                        <li><strong class="text-[#2e86de]">Bilangan Bulat:</strong> (...-1, 0, 1...) - Termasuk negatif.</li>
+                        <li><strong class="text-[#2e86de]">Rasional:</strong> (1/2, 0.25) - Bisa jadi pecahan.</li>
+                    </ul>
+                </div>
+                
+                <!-- HTML/CSS Visualization of Venn Diagram -->
+                <div class="flex justify-center items-center py-8">
+                    <!-- Real Numbers (Outer) -->
+                    <div class="circle-container bg-[#2e86de] w-80 h-80 shadow-lg relative flex flex-col justify-start pt-4">
+                        <span class="text-white font-bold text-sm uppercase">Bilangan Real</span>
+                        
+                        <!-- Rational & Irrational Split Container -->
+                        <div class="flex justify-center items-start w-full h-full pt-2 gap-2 px-2">
+                            
+                            <!-- Irrational (Side) -->
+                            <div class="bg-[#ff9f43] w-20 h-20 rounded-full flex items-center justify-center shadow-md mt-12 animate-pulse">
+                                <div class="text-center text-white text-xs font-bold leading-tight">Irasional<br>π, √2</div>
+                            </div>
+
+                            <!-- Rational (Inner) -->
+                            <div class="circle-container bg-[#48dbfb] w-56 h-56 shadow-md relative flex flex-col justify-start pt-2">
+                                <span class="text-[#004e92] font-bold text-xs uppercase mb-1">Rasional</span>
+                                
+                                <!-- Integers -->
+                                <div class="circle-container bg-white w-40 h-40 shadow-sm flex flex-col justify-start pt-2">
+                                    <span class="text-gray-500 font-bold text-[10px] uppercase mb-1">Bulat</span>
+                                    
+                                    <!-- Whole -->
+                                    <div class="circle-container bg-gray-100 w-28 h-28 border border-gray-200 flex flex-col justify-start pt-2">
+                                        <span class="text-gray-500 font-bold text-[10px] uppercase mb-0">Cacah</span>
+                                        <span class="text-gray-400 text-[10px] mb-1">0</span>
+                                        
+                                        <!-- Natural -->
+                                        <div class="circle-container bg-[#ff9f43] w-12 h-12 shadow-inner">
+                                            <span class="text-white font-bold text-[9px] leading-tight">Asli<br>1,2,3</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Prime vs Composite -->
+        <section class="glass-card rounded-2xl shadow-xl p-6">
+            <h2 class="text-2xl font-bold text-[#ff9f43] mb-4 border-b-2 border-[#2e86de] inline-block pb-2">
+                2. Prima vs Komposit
+            </h2>
+            <p class="mb-4 text-sm text-gray-700">
+                Identitas sebuah bilangan ditentukan oleh <strong>jumlah faktornya</strong>. Grafik ini menunjukkan jumlah faktor untuk bilangan 1 sampai 10.
+            </p>
+            <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-[#ff9f43] mb-4 text-xs">
+                <strong>Aturan Emas:</strong><br>
+                • <strong>Prima (Biru):</strong> Tepat 2 faktor (1 & dirinya).<br>
+                • <strong>Komposit (Oranye):</strong> Lebih dari 2 faktor.<br>
+                • <strong>Angka 1 (Abu):</strong> Bukan keduanya (hanya 1 faktor).
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="primeChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Section 3: Finding Factors (Concept) -->
+        <section class="glass-card rounded-2xl shadow-xl p-6 flex flex-col justify-center">
+            <h2 class="text-2xl font-bold text-[#2e86de] mb-4 border-b-2 border-[#48dbfb] inline-block pb-2">
+                3. Anatomi Angka (Faktorisasi)
+            </h2>
+            <p class="mb-6 text-sm text-gray-700">
+                Setiap bilangan komposit dapat "dibedah" menjadi perkalian bilangan-bilangan prima. Ini disebut <strong>Faktorisasi Prima</strong>. Bayangkan ini sebagai DNA dari sebuah angka.
+            </p>
+            
+            <!-- HTML Tree Visualization for 180 -->
+            <div class="flex flex-col items-center justify-center space-y-2 w-full">
+                <!-- Root -->
+                <div class="bg-[#2e86de] text-white font-bold rounded-full w-16 h-16 flex items-center justify-center text-xl shadow-lg z-10">180</div>
+                
+                <!-- Branch 1 -->
+                <div class="w-full max-w-[200px] border-t-2 border-gray-300 relative h-6">
+                     <div class="absolute left-0 top-0 w-[1px] h-6 bg-gray-300"></div>
+                     <div class="absolute right-0 top-0 w-[1px] h-6 bg-gray-300"></div>
+                </div>
+                
+                <!-- Level 2 -->
+                <div class="flex justify-between w-full max-w-[200px]">
+                    <div class="bg-gray-200 text-gray-600 font-bold rounded-full w-12 h-12 flex items-center justify-center">18</div>
+                    <div class="bg-gray-200 text-gray-600 font-bold rounded-full w-12 h-12 flex items-center justify-center">10</div>
+                </div>
+
+                <!-- Branch 2 -->
+                 <div class="flex justify-between w-full max-w-[200px]">
+                    <div class="w-12 flex justify-center"><div class="w-[1px] h-4 bg-gray-300"></div></div>
+                    <div class="w-12 flex justify-center"><div class="w-[1px] h-4 bg-gray-300"></div></div>
+                </div>
+
+                <!-- Level 3 (Primes reveal) -->
+                <div class="flex justify-between w-full max-w-[240px] text-xs font-bold text-white">
+                     <!-- 18 split -->
+                    <div class="flex space-x-2">
+                         <div class="bg-[#ff9f43] rounded-full w-8 h-8 flex items-center justify-center shadow">2</div>
+                         <div class="bg-[#ff9f43] rounded-full w-8 h-8 flex items-center justify-center shadow">3²</div>
+                    </div>
+                     <!-- 10 split -->
+                    <div class="flex space-x-2">
+                         <div class="bg-[#ff9f43] rounded-full w-8 h-8 flex items-center justify-center shadow">2</div>
+                         <div class="bg-[#ff9f43] rounded-full w-8 h-8 flex items-center justify-center shadow">5</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-2 bg-[#ff9f43] text-white rounded text-center text-sm font-mono shadow-md w-full max-w-[250px]">
+                    180 = 2² × 3² × 5
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: KPK (LCM) Analysis -->
+        <section class="glass-card rounded-2xl shadow-xl p-6 md:col-span-2">
+            <div class="flex flex-col md:flex-row justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-[#ff9f43] border-b-2 border-[#2e86de] inline-block pb-2">
+                        4. KPK: Kapan Kita Bertemu?
+                    </h2>
+                    <p class="mt-2 text-sm text-gray-700 max-w-xl">
+                        KPK (Kelipatan Persekutuan Terkecil) menjawab pertanyaan "Kapan kejadian berulang akan terjadi bersamaan lagi?".
+                        <br><br>
+                        <strong>Contoh Kasus:</strong> Bus A berangkat setiap <strong>12 menit</strong>. Bus B berangkat setiap <strong>18 menit</strong>.
+                        Grafik di bawah menunjukkan perjalanan waktu kedua bus. Titik temu pertama adalah KPK-nya.
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 bg-blue-100 text-[#2e86de] px-4 py-2 rounded-lg font-bold text-xl">
+                    KPK = 36 Menit
+                </div>
+            </div>
+            
+            <div class="chart-container w-full">
+                <canvas id="kpkChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Section 5: FPB (GCD) Analysis -->
+        <section class="glass-card rounded-2xl shadow-xl p-6 md:col-span-2">
+             <div class="flex flex-col md:flex-row justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-[#2e86de] border-b-2 border-[#48dbfb] inline-block pb-2">
+                        5. FPB: Pembagian Maksimal
+                    </h2>
+                    <p class="mt-2 text-sm text-gray-700 max-w-xl">
+                        FPB (Faktor Persekutuan Terbesar) menjawab pertanyaan "Berapa banyak kelompok identik yang bisa kita buat tanpa sisa?".
+                        <br><br>
+                        <strong>Contoh Kasus:</strong> Kita punya <strong>48 Susu</strong> dan <strong>72 Biskuit</strong>. Kita ingin membuat paket bingkisan.
+                        Grafik menunjukkan bagaimana kedua jumlah tersebut bisa dibagi habis oleh angka yang sama (24).
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 bg-orange-100 text-[#ff9f43] px-4 py-2 rounded-lg font-bold text-xl">
+                    FPB = 24 Paket
+                </div>
+            </div>
+
+            <div class="chart-container w-full">
+                <canvas id="fpbChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Conclusion -->
+        <section class="md:col-span-2 bg-[#222f3e] text-white rounded-2xl p-8 text-center shadow-2xl">
+            <h3 class="text-2xl font-bold mb-4">Ringkasan Strategi</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-4xl mx-auto">
+                <div class="bg-[#2e86de] p-4 rounded-lg">
+                    <h4 class="font-bold text-lg mb-2 text-[#48dbfb]">Gunakan KPK Jika...</h4>
+                    <p class="text-sm opacity-90">Soal menanyakan tentang <strong>waktu</strong>, jadwal berulang, atau kejadian "bersamaan lagi".</p>
+                    <p class="text-xs mt-2 italic">Kata kunci: "setiap... sekali", "bersama-sama", "berikutnya".</p>
+                </div>
+                <div class="bg-[#ff9f43] p-4 rounded-lg">
+                    <h4 class="font-bold text-lg mb-2 text-white">Gunakan FPB Jika...</h4>
+                    <p class="text-sm opacity-90">Soal menanyakan tentang <strong>jumlah</strong>, pembagian barang, atau potongan "paling banyak/panjang".</p>
+                    <p class="text-xs mt-2 italic">Kata kunci: "dibagi rata", "jumlah paling banyak", "potongan sama".</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center text-gray-500 text-sm mb-8">
+        &copy; 2024 Panduan Visual Matematika. Dibuat dengan Tailwind & Chart.js
+    </footer>
+
+    <script>
+        // --- UTILITY: Label Wrapping Logic (16 char limit) ---
+        function wrapLabel(label) {
+            if (typeof label !== 'string') return label;
+            if (label.length <= 16) return label;
+            
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- CHART 1: Prime vs Composite (Bar Chart) ---
+        const ctxPrime = document.getElementById('primeChart').getContext('2d');
+        // Data: Factors count for numbers 1-10
+        // 1:1, 2:2(P), 3:2(P), 4:3, 5:2(P), 6:4, 7:2(P), 8:4, 9:3, 10:4
+        const primeData = [
+            { x: '1', y: 1, type: 'Unik' },
+            { x: '2', y: 2, type: 'Prima' },
+            { x: '3', y: 2, type: 'Prima' },
+            { x: '4', y: 3, type: 'Komposit' },
+            { x: '5', y: 2, type: 'Prima' },
+            { x: '6', y: 4, type: 'Komposit' },
+            { x: '7', y: 2, type: 'Prima' },
+            { x: '8', y: 4, type: 'Komposit' },
+            { x: '9', y: 3, type: 'Komposit' },
+            { x: '10', y: 4, type: 'Komposit' }
+        ];
+
+        // Process labels
+        const rawLabelsPrime = primeData.map(d => d.x);
+        const wrappedLabelsPrime = rawLabelsPrime.map(l => wrapLabel(l));
+        
+        // Color mapping
+        const bgColorsPrime = primeData.map(d => {
+            if(d.type === 'Prima') return '#2e86de'; // Blue
+            if(d.type === 'Komposit') return '#ff9f43'; // Orange
+            return '#a4b0be'; // Grey for 1
+        });
+
+        new Chart(ctxPrime, {
+            type: 'bar',
+            data: {
+                labels: wrappedLabelsPrime,
+                datasets: [{
+                    label: 'Jumlah Faktor',
+                    data: primeData.map(d => d.y),
+                    backgroundColor: bgColorsPrime,
+                    borderRadius: 8,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Critical for container fit
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Jumlah Faktor: Prima (2) vs Komposit (>2)',
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                            },
+                            label: function(context) {
+                                const index = context.dataIndex;
+                                return `Angka ${primeData[index].x}: ${primeData[index].y} Faktor (${primeData[index].type})`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Jumlah Faktor' },
+                        grid: { color: '#f1f2f6' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        title: { display: true, text: 'Bilangan (1-10)' }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: LCM / KPK (Line Chart) ---
+        const ctxKPK = document.getElementById('kpkChart').getContext('2d');
+        // Visualizing Bus departures.
+        // Bus A (12): 0, 12, 24, 36, 48
+        // Bus B (18): 0, 18, 36, 54
+        const kpkLabelsRaw = ['0', '6', '12', '18', '24', '30', '36', '42', '48', '54'];
+        const kpkLabelsWrapped = kpkLabelsRaw.map(l => wrapLabel(l));
+
+        new Chart(ctxKPK, {
+            type: 'line',
+            data: {
+                labels: kpkLabelsWrapped,
+                datasets: [
+                    {
+                        label: 'Bus A (Setiap 12 menit)',
+                        data: [0, null, 1, null, 2, null, 3, null, 4, null], // Simplified visualization logic: 1=departure
+                        borderColor: '#2e86de',
+                        backgroundColor: '#2e86de',
+                        pointRadius: 8,
+                        pointHoverRadius: 10,
+                        pointStyle: 'circle',
+                        spanGaps: true,
+                        tension: 0
+                    },
+                    {
+                        label: 'Bus B (Setiap 18 menit)',
+                        data: [0, null, null, 1, null, null, 3, null, null, 4], // Aligning 36 (index 6) to match magnitude for visual intersection
+                        borderColor: '#ff9f43',
+                        backgroundColor: '#ff9f43',
+                        pointRadius: 8,
+                        pointHoverRadius: 10,
+                        pointStyle: 'rectRot',
+                        spanGaps: true,
+                        tension: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Garis Waktu Keberangkatan Bus',
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                let labelStr = Array.isArray(label) ? label.join(' ') : label;
+                                return `Menit ke-${labelStr}`;
+                            },
+                            label: function(context) {
+                                if (context.raw === 3 && context.label.includes('36')) {
+                                    return "KPK! KEDUA BUS BERANGKAT (Menit 36)";
+                                }
+                                return context.dataset.label;
+                            }
+                        }
+                    },
+                    annotation: {
+                        // Note: Chart.js annotation plugin not loaded to keep dependency low, 
+                        // logic handled via point overlap visual.
+                    }
+                },
+                scales: {
+                    y: {
+                        display: false, // Hide Y axis as it's just conceptual "departure"
+                        min: -1,
+                        max: 5
+                    },
+                    x: {
+                        title: { display: true, text: 'Waktu (Menit)' },
+                        grid: { color: (ctx) => ctx.tick.value === 6 ? '#fab1a0' : '#f1f2f6', lineWidth: (ctx) => ctx.tick.value === 6 ? 2 : 1 }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: FPB / GCD (Stacked Bar) ---
+        const ctxFPB = document.getElementById('fpbChart').getContext('2d');
+        
+        // Scenario: 48 Susu vs 72 Biskuit. FPB is 24.
+        // We want to show they are both made of chunks of 24.
+        // 48 = 24 + 24
+        // 72 = 24 + 24 + 24
+        
+        const fpbLabelsRaw = ['Total Item Susu (48)', 'Total Item Biskuit (72)'];
+        const fpbLabelsWrapped = fpbLabelsRaw.map(l => wrapLabel(l));
+
+        new Chart(ctxFPB, {
+            type: 'bar',
+            data: {
+                labels: fpbLabelsWrapped,
+                datasets: [
+                    {
+                        label: 'Paket 1 (Isi 24)',
+                        data: [24, 24],
+                        backgroundColor: '#2e86de',
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Paket 2 (Isi 24)',
+                        data: [24, 24],
+                        backgroundColor: '#48dbfb',
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Paket 3 (Isi 24)',
+                        data: [0, 24], // Only 72 has a 3rd chunk
+                        backgroundColor: '#ff9f43',
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // Horizontal bar
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Pembagian Maksimal (FPB = 24)',
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                            },
+                            afterBody: function() {
+                                return "Setiap segmen mewakili 24 item (Nilai FPB)";
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false // Hide legend to reduce clutter
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Jumlah Item Total' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        stacked: true,
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
