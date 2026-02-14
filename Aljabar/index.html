@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategi & Manipulasi Aljabar SNBT - Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Font Setup */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9; /* Stone-50 */
+            color: #1c1917; /* Stone-900 */
+        }
+
+        .math-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Styling - Mandatory */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e;
+        }
+
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Utility for math display */
+        .sup {
+            vertical-align: super;
+            font-size: smaller;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals (Stone) with Orange Accents for a calm, academic focus. -->
+</head>
+<body class="bg-stone-50 min-h-screen flex flex-col">
+
+    <!-- Application Structure Plan: 
+         1. Header: Quick summary and context setting.
+         2. Dashboard Layout: A two-column layout on desktop.
+            - Left Column: Interactive Topic Explorer (The core learning modules).
+            - Right Column: "Skill Radar" (Visualization of mastery) and Vocabulary Cards.
+         3. Topic Explorer: Tabs for the 4 main topics. Each tab contains explanation, examples, and an interactive "Check Understanding" button that updates the chart.
+         4. Insight Section: An accordion for Key Questions to test deep understanding.
+         Reasoning: This structure separates active learning (reading/doing) from progress tracking (chart), encouraging users to engage with each topic to "fill" their skill graph.
+    -->
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-stone-800 tracking-tight">Aljabar<span class="text-orange-600">SNBT</span></span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-stone-500 hidden sm:block">Panduan Strategis & Manipulasi</span>
+                    <button onclick="resetProgress()" class="text-sm text-orange-600 hover:text-orange-800 font-medium">Reset Progress</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Intro Section -->
+        <section class="mb-10 text-center max-w-3xl mx-auto">
+            <h1 class="text-3xl sm:text-4xl font-bold text-stone-900 mb-4">Kuasai Pondasi Aljabar untuk SNBT</h1>
+            <p class="text-lg text-stone-600 leading-relaxed">
+                Aplikasi interaktif ini dirancang untuk membantu Anda memahami teknik manipulasi aljabar yang sering menjebak dalam ujian. 
+                Pelajari 4 topik utama, hindari kesalahan umum, dan pantau penguasaan materi Anda melalui grafik radar di bawah ini.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Learning Modules (Topic Explorer) -->
+            <div class="lg:col-span-7 space-y-8">
+                
+                <!-- Introduction to Modules -->
+                <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+                    <h2 class="text-xl font-bold text-stone-800 mb-2">Modul Pembelajaran</h2>
+                    <p class="text-stone-600 mb-6">
+                        Pilih topik di bawah ini untuk mempelajari konsep kunci. Klik tombol "Saya Paham" di setiap sesi untuk memperbarui grafik kemampuan Anda.
+                    </p>
+
+                    <!-- Topic Navigation Tabs -->
+                    <div class="flex flex-wrap gap-2 mb-6" id="topicTabs">
+                        <button onclick="switchTab('topic1')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-orange-100 text-orange-700 ring-1 ring-orange-200 transition-all" data-target="topic1">Distribusi Tanda</button>
+                        <button onclick="switchTab('topic2')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition-all" data-target="topic2">Pola Produk</button>
+                        <button onclick="switchTab('topic3')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition-all" data-target="topic3">Selisih Kuadrat</button>
+                        <button onclick="switchTab('topic4')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition-all" data-target="topic4">Faktorisasi Lanjut</button>
+                    </div>
+
+                    <!-- Topic Content Areas -->
+                    <div class="relative min-h-[300px]">
+                        
+                        <!-- Topic 1: Distribusi Tanda -->
+                        <div id="topic1" class="topic-content transition-opacity duration-300">
+                            <h3 class="text-lg font-semibold text-stone-800 mb-3 border-l-4 border-orange-500 pl-3">Ekspansi Kurung & Distribusi Tanda</h3>
+                            <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 mb-4">
+                                <p class="mb-2 font-medium text-red-600">⚠️ Kesalahan Umum:</p>
+                                <p class="text-stone-700">Lupa mengubah tanda suku kedua saat mendistribusikan tanda negatif.</p>
+                                <div class="mt-3 p-3 bg-white rounded border border-stone-200 math-font text-center text-lg">
+                                    -(a - b) &ne; -a - b
+                                </div>
+                            </div>
+                            <p class="text-stone-600 mb-4">
+                                Saat tanda negatif bertemu dengan kurung, ia bekerja seperti pengali <span class="math-font">-1</span>. Semua tanda di dalam kurung harus dibalik.
+                            </p>
+                            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                                <p class="font-semibold text-blue-800 mb-2">Simulasi:</p>
+                                <p class="text-stone-700 mb-2">Soal: <span class="math-font">-(x - (y + z))</span></p>
+                                <button onclick="revealStep('step1')" class="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200">Lihat Langkah 1</button>
+                                <p id="step1" class="hidden mt-2 math-font text-stone-800 ml-4 border-l-2 border-blue-300 pl-2">-x + (y + z) <span class="text-sm text-stone-500 font-sans">(Minus bertemu x jadi -x, bertemu -(...) jadi +)</span></p>
+                                <div class="mt-2">
+                                    <button onclick="revealStep('step2')" class="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200">Lihat Hasil Akhir</button>
+                                    <p id="step2" class="hidden mt-2 math-font text-stone-800 ml-4 border-l-2 border-blue-300 pl-2">-x + y + z</p>
+                                </div>
+                            </div>
+                            <button onclick="updateMastery(0, 25)" class="w-full sm:w-auto bg-stone-800 text-white px-6 py-2 rounded-lg hover:bg-stone-700 transition-colors shadow-lg shadow-stone-200/50">Saya Paham Konsep Ini</button>
+                        </div>
+
+                        <!-- Topic 2: Pola Produk -->
+                        <div id="topic2" class="topic-content hidden transition-opacity duration-300">
+                            <h3 class="text-lg font-semibold text-stone-800 mb-3 border-l-4 border-orange-500 pl-3">Pola Kuadrat Sempurna</h3>
+                            <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 mb-4">
+                                <p class="mb-2 font-medium text-red-600">⚠️ Kesalahan Umum:</p>
+                                <p class="text-stone-700">Melupakan suku tengah <span class="math-font">-2ab</span>.</p>
+                                <div class="mt-3 p-3 bg-white rounded border border-stone-200 math-font text-center text-lg">
+                                    (x - y)<span class="sup">2</span> &ne; x<span class="sup">2</span> - y<span class="sup">2</span>
+                                </div>
+                            </div>
+                            <p class="text-stone-600 mb-4">
+                                Ingat pola sakti ini untuk mempercepat perhitungan:
+                                <br><span class="math-font block mt-2 text-center bg-stone-100 p-2 rounded">(a ± b)<span class="sup">2</span> = a<span class="sup">2</span> ± 2ab + b<span class="sup">2</span></span>
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="bg-orange-50 p-3 rounded text-center">
+                                    <span class="block text-xs text-orange-800 font-bold uppercase mb-1">Binomial</span>
+                                    <span class="math-font text-lg">(3x - 2)<span class="sup">2</span></span>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded text-center">
+                                    <span class="block text-xs text-green-800 font-bold uppercase mb-1">Trinomial</span>
+                                    <span class="math-font text-lg">9x<span class="sup">2</span> - 12x + 4</span>
+                                </div>
+                            </div>
+                            <button onclick="updateMastery(1, 25)" class="w-full sm:w-auto bg-stone-800 text-white px-6 py-2 rounded-lg hover:bg-stone-700 transition-colors shadow-lg shadow-stone-200/50">Saya Paham Konsep Ini</button>
+                        </div>
+
+                        <!-- Topic 3: Selisih Kuadrat -->
+                        <div id="topic3" class="topic-content hidden transition-opacity duration-300">
+                            <h3 class="text-lg font-semibold text-stone-800 mb-3 border-l-4 border-orange-500 pl-3">Selisih Dua Kuadrat Bertingkat</h3>
+                            <p class="text-stone-600 mb-4">
+                                Bentuk <span class="math-font">a<span class="sup">2</span> - b<span class="sup">2</span> = (a-b)(a+b)</span> bisa diterapkan berulang kali.
+                            </p>
+                            <div class="bg-white border border-stone-200 rounded-lg p-4 mb-4 shadow-sm">
+                                <h4 class="font-bold text-stone-700 mb-2">Contoh Bertingkat: x<span class="sup">4</span> - 1</h4>
+                                <ol class="list-decimal list-inside space-y-2 text-stone-600">
+                                    <li>Anggap <span class="math-font">x<span class="sup">4</span></span> sebagai <span class="math-font">(x<span class="sup">2</span>)<span class="sup">2</span></span>.</li>
+                                    <li>Tahap 1: <span class="math-font">(x<span class="sup">2</span> - 1)(x<span class="sup">2</span> + 1)</span></li>
+                                    <li>Tahap 2 (Faktorkan lagi <span class="math-font">x<span class="sup">2</span> - 1</span>): <span class="math-font text-orange-600 font-bold">(x - 1)(x + 1)</span>(x<span class="sup">2</span> + 1)</li>
+                                </ol>
+                            </div>
+                            <p class="text-sm text-stone-500 italic mb-4">Tips: Jangan berhenti sampai Anda yakin tidak ada lagi bentuk kuadrat dikurang kuadrat.</p>
+                            <button onclick="updateMastery(2, 25)" class="w-full sm:w-auto bg-stone-800 text-white px-6 py-2 rounded-lg hover:bg-stone-700 transition-colors shadow-lg shadow-stone-200/50">Saya Paham Konsep Ini</button>
+                        </div>
+
+                        <!-- Topic 4: Faktorisasi Lanjut -->
+                        <div id="topic4" class="topic-content hidden transition-opacity duration-300">
+                            <h3 class="text-lg font-semibold text-stone-800 mb-3 border-l-4 border-orange-500 pl-3">Faktorisasi Trinomial & FPB</h3>
+                            <div class="space-y-4">
+                                <div class="p-3 bg-yellow-50 border-l-4 border-yellow-400">
+                                    <h4 class="font-bold text-yellow-800">Aturan #1: Cek FPB Dulu!</h4>
+                                    <p class="text-sm text-yellow-700">Sebelum memfaktorkan trinomial, selalu keluarkan Faktor Persekutuan Terbesar.</p>
+                                    <p class="text-sm font-mono mt-1 text-stone-800">3x<span class="sup">2</span> - 12 &rarr; 3(x<span class="sup">2</span> - 4)</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-stone-700 mb-1">Jika a &ne; 1 (ax<span class="sup">2</span> + bx + c)</h4>
+                                    <p class="text-stone-600 text-sm mb-2">Cari dua angka yang hasil kalinya <span class="math-font font-bold">a × c</span> dan jumlahnya <span class="math-font font-bold">b</span>.</p>
+                                    <div class="grid grid-cols-2 gap-2 text-sm">
+                                        <div class="bg-white p-2 border rounded">Soal: 2x<span class="sup">2</span> + 7x + 3</div>
+                                        <div class="bg-white p-2 border rounded">Target: Kali=6, Jumlah=7</div>
+                                    </div>
+                                    <p class="text-sm mt-2 text-stone-500">Angka tersebut adalah 6 dan 1. Pecah 7x menjadi 6x + x.</p>
+                                </div>
+                            </div>
+                            <button onclick="updateMastery(3, 25)" class="w-full sm:w-auto bg-stone-800 text-white px-6 py-2 rounded-lg hover:bg-stone-700 transition-colors shadow-lg shadow-stone-200/50 mt-4">Saya Paham Konsep Ini</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Questions / Insights Accordion -->
+                <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+                    <h2 class="text-xl font-bold text-stone-800 mb-4">Uji Pemahaman Kritis</h2>
+                    <p class="text-stone-600 mb-4">Pertanyaan ini menguji logika aljabar Anda. Klik untuk melihat jawaban.</p>
+                    
+                    <div class="space-y-2">
+                        <!-- Q1 -->
+                        <div class="border border-stone-200 rounded-lg overflow-hidden">
+                            <button onclick="toggleAccordion('ans1')" class="w-full flex justify-between items-center p-4 bg-stone-50 hover:bg-stone-100 transition-colors text-left">
+                                <span class="font-medium text-stone-800">Mengapa (x - y)<span class="sup">2</span> tidak sama dengan x<span class="sup">2</span> - y<span class="sup">2</span>?</span>
+                                <span class="text-orange-500 text-xl font-bold">+</span>
+                            </button>
+                            <div id="ans1" class="hidden p-4 bg-white text-stone-600 border-t border-stone-200">
+                                <p>Secara geometris, <span class="math-font">(x-y)<span class="sup">2</span></span> adalah luas persegi dengan sisi <span class="math-font">(x-y)</span>. Jika kita hanya mengambil <span class="math-font">x<span class="sup">2</span></span> dan membuang <span class="math-font">y<span class="sup">2</span></span>, kita kehilangan dua persegi panjang berukuran <span class="math-font">xy</span>. Secara aljabar, ada suku tengah <span class="math-font">-2xy</span> yang muncul dari perkalian distribusi.</p>
+                            </div>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="border border-stone-200 rounded-lg overflow-hidden">
+                            <button onclick="toggleAccordion('ans2')" class="w-full flex justify-between items-center p-4 bg-stone-50 hover:bg-stone-100 transition-colors text-left">
+                                <span class="font-medium text-stone-800">Apa langkah pertama memfaktorkan koefisien a &ne; 1?</span>
+                                <span class="text-orange-500 text-xl font-bold">+</span>
+                            </button>
+                            <div id="ans2" class="hidden p-4 bg-white text-stone-600 border-t border-stone-200">
+                                <p>Selalu cek apakah ada <strong>Faktor Persekutuan Terbesar (FPB)</strong> yang bisa dikeluarkan dari semua suku. Ini akan menyederhanakan angka-angka sebelum Anda mulai mencari faktor dari trinomial.</p>
+                            </div>
+                        </div>
+
+                         <!-- Q3 -->
+                         <div class="border border-stone-200 rounded-lg overflow-hidden">
+                            <button onclick="toggleAccordion('ans3')" class="w-full flex justify-between items-center p-4 bg-stone-50 hover:bg-stone-100 transition-colors text-left">
+                                <span class="font-medium text-stone-800">Bagaimana cek kuadrat sempurna dengan cepat?</span>
+                                <span class="text-orange-500 text-xl font-bold">+</span>
+                            </button>
+                            <div id="ans3" class="hidden p-4 bg-white text-stone-600 border-t border-stone-200">
+                                <p>Lihat suku pertama dan terakhir. Apakah keduanya positif dan merupakan bilangan kuadrat? Jika ya, cek apakah suku tengahnya sama dengan <span class="math-font">2 × akar(depan) × akar(belakang)</span>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Visualization & Vocabulary -->
+            <div class="lg:col-span-5 space-y-8">
+                
+                <!-- Mastery Chart -->
+                <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+                    <h2 class="text-xl font-bold text-stone-800 mb-2">Radar Penguasaan</h2>
+                    <p class="text-sm text-stone-500 mb-4">Visualisasi keseimbangan skill aljabar Anda. Selesaikan modul di kiri untuk meningkatkan grafik.</p>
+                    
+                    <!-- Visualization & Content Choices: 
+                         Goal: Motivate user to cover all topics.
+                         Viz Method: Radar Chart (Chart.js). 
+                         Justification: Algebra requires multiple distinct skills (signs, factoring, patterns). A radar chart shows imbalance clearly (e.g., good at factoring but bad at signs).
+                         NO SVG Confirmation: Used <canvas> wrapper.
+                    -->
+                    <div class="chart-container">
+                        <canvas id="masteryChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <span id="masteryText" class="text-sm font-semibold text-orange-600">Level Pemula</span>
+                    </div>
+                </div>
+
+                <!-- Vocabulary List (Cards) -->
+                <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+                    <h2 class="text-xl font-bold text-stone-800 mb-4">Kamus Aljabar</h2>
+                    <div class="grid grid-cols-1 gap-3">
+                        <!-- Card 1 -->
+                        <div class="p-3 border-l-4 border-stone-400 bg-stone-50 rounded card-hover">
+                            <h4 class="font-bold text-stone-800">Koefisien</h4>
+                            <p class="text-sm text-stone-600">Angka di depan variabel (misal: 3 pada 3x).</p>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="p-3 border-l-4 border-stone-400 bg-stone-50 rounded card-hover">
+                            <h4 class="font-bold text-stone-800">Konstanta</h4>
+                            <p class="text-sm text-stone-600">Suku berupa angka saja, tanpa variabel.</p>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="p-3 border-l-4 border-stone-400 bg-stone-50 rounded card-hover">
+                            <h4 class="font-bold text-stone-800">Binomial vs Trinomial</h4>
+                            <p class="text-sm text-stone-600">Binomial punya 2 suku (x+2), Trinomial punya 3 suku (x²+5x+6).</p>
+                        </div>
+                        <!-- Card 4 -->
+                        <div class="p-3 border-l-4 border-stone-400 bg-stone-50 rounded card-hover">
+                            <h4 class="font-bold text-stone-800">Faktorisasi</h4>
+                            <p class="text-sm text-stone-600">Mengubah bentuk penjumlahan menjadi perkalian faktor.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-stone-500 text-sm">© 2024 Panduan Belajar Aljabar SNBT. Dibuat untuk kesuksesan belajar Anda.</p>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // --- State Management ---
+        let masteryData = [20, 20, 20, 20]; // Initial scores for 4 topics
+        // Topic Mapping: 0: Distribusi Tanda, 1: Pola Produk, 2: Selisih Kuadrat, 3: Faktorisasi Lanjut
+        
+        let chartInstance = null;
+
+        // --- Chart Initialization ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('masteryChart').getContext('2d');
+            
+            // Chart.js Configuration
+            chartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Distribusi Tanda', 'Pola Produk', 'Selisih Kuadrat', 'Faktorisasi'],
+                    datasets: [{
+                        label: 'Tingkat Penguasaan',
+                        data: masteryData,
+                        backgroundColor: 'rgba(234, 88, 12, 0.2)', // Orange-600 with opacity
+                        borderColor: 'rgba(234, 88, 12, 1)',
+                        pointBackgroundColor: 'rgba(234, 88, 12, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(234, 88, 12, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: '#e5e7eb' // stone-200
+                            },
+                            grid: {
+                                color: '#e5e7eb'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    family: "'Inter', sans-serif",
+                                    weight: '600'
+                                },
+                                color: '#44403c' // stone-700
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                stepSize: 20,
+                                display: false // Hide numbers for cleaner look
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(28, 25, 23, 0.9)', // stone-900
+                            titleFont: { family: "'Inter', sans-serif" },
+                            bodyFont: { family: "'Inter', sans-serif" }
+                        }
+                    }
+                }
+            });
+        });
+
+        // --- Interaction Logic ---
+
+        // 1. Tab Switching
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.topic-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // Show selected content
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Update button styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.dataset.target === tabId) {
+                    btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-orange-100 text-orange-700 ring-1 ring-orange-200 transition-all";
+                } else {
+                    btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition-all";
+                }
+            });
+        }
+
+        // 2. Reveal Steps in Simulation
+        function revealStep(stepId) {
+            const el = document.getElementById(stepId);
+            el.classList.remove('hidden');
+            el.classList.add('block', 'animate-fade-in'); // simple fade in effect via CSS logic implication
+        }
+
+        // 3. Update Mastery Chart
+        function updateMastery(index, increment) {
+            // Cap at 100
+            if (masteryData[index] < 100) {
+                masteryData[index] += increment;
+                if (masteryData[index] > 100) masteryData[index] = 100;
+                
+                // Update Chart
+                chartInstance.data.datasets[0].data = masteryData;
+                chartInstance.update();
+
+                // Feedback to user
+                updateLevelText();
+            }
+        }
+
+        function updateLevelText() {
+            const average = masteryData.reduce((a, b) => a + b, 0) / masteryData.length;
+            const textEl = document.getElementById('masteryText');
+            
+            if (average < 40) textEl.textContent = "Level: Pemula (Terus Belajar!)";
+            else if (average < 70) textEl.textContent = "Level: Menengah (Bagus!)";
+            else if (average < 90) textEl.textContent = "Level: Mahir (Luar Biasa!)";
+            else textEl.textContent = "Level: Ahli Aljabar SNBT!";
+        }
+
+        function resetProgress() {
+            masteryData = [20, 20, 20, 20];
+            chartInstance.data.datasets[0].data = masteryData;
+            chartInstance.update();
+            updateLevelText();
+            
+            // Hide simulation steps
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            
+            // Close accordions
+            document.querySelectorAll('[id^="ans"]').forEach(el => el.classList.add('hidden'));
+        }
+
+        // 4. Accordion Toggle
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+    </script>
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Chart.js used with canvas. -->
+</body>
+</html>
